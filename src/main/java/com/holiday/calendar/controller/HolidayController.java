@@ -1,5 +1,6 @@
 package com.holiday.calendar.controller;
 
+import com.holiday.calendar.model.AvailableCountry;
 import com.holiday.calendar.model.Holiday;
 import com.holiday.calendar.service.HolidayService;
 import org.slf4j.Logger;
@@ -29,5 +30,15 @@ public class HolidayController {
         logger.info("Returning {} holidays for country={} and year={}", holidays.size(), country, year);
 
         return ResponseEntity.ok(holidays);
+    }
+
+    @GetMapping("/available-countries")
+    public ResponseEntity<List<AvailableCountry>> getAvailableCountries(){
+
+        logger.info("Received request to get available countries");
+        List<AvailableCountry> countries = holidayService.getAvailableCountries();
+        logger.info("Returning {} available countries", countries.size());
+
+        return ResponseEntity.ok(countries);
     }
 }

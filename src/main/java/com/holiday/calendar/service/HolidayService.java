@@ -1,6 +1,7 @@
 package com.holiday.calendar.service;
 
 import com.holiday.calendar.exception.HolidayServiceException;
+import com.holiday.calendar.model.AvailableCountry;
 import com.holiday.calendar.model.Holiday;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,9 +19,11 @@ import java.util.List;
 public class HolidayService {
 
     private static final Logger logger = LoggerFactory.getLogger(HolidayService.class);
+    private static final String AVAILABLE_COUNTRIES_API = "https://date.nager.at/api/v3/AvailableCountries";
 
     @Autowired
     private RestTemplate restTemplate;
+
 
     public List<Holiday> getHolidays(String country, int year) {
         String url = "https://date.nager.at/api/v3/PublicHolidays/" + year + "/" + country;
@@ -45,6 +48,15 @@ public class HolidayService {
         } catch (Exception e) {
             logger.error("Error while calling holiday API", e);
             throw new HolidayServiceException("Failed to fetch holidays", e);
+        }
+    }
+    public List<AvailableCountry> getAvailableCountries() {
+        try {
+            AvailableCountry[] countries = restTemplate.getForObject(AVAILABLE_COUNTRIES_API, AvailableCountry[].class);
+            return List.of(countries);
+        } catch (Exception e) {
+            logger.error("Error while calling available countries API", e);
+            throw new HolidayServiceException("Failed to fetch available countries", e);
         }
     }
     private boolean isWeekday(LocalDate date) {
